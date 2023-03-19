@@ -52,10 +52,16 @@
   </script>
   </head>
   <body>
+    <audio id="audio" src="https://cdn.glitch.com/2d230eef-a010-40d3-9ecf-f05f95668f93%2Fshootingstars.mp3?1493689360669" autoplay loop></audio>
+    <script>
+      var audio = document.getElementById('audio');
+      audio.volume = 0.3;
+    </script>
     <a-scene>
       
     <a-assets>
     <img id="myColor" src= "img/1.jpg" >
+    <img id="myColor1" src= "img/3.jpeg" >
     <a-mixin id="color-animation"
     animation__color="startEvents: color; property: material.color; from: #E39940; to: #722DFC; loop: 2; dur: 1000; easing:linear;"
     ></a-mixin>
@@ -81,17 +87,32 @@
              mixin="color-animation" 
              click-component="animateElement:#box; eventName:color"
              material="src: #myColor; transparent: true; opacity: 0.75" 
+             height="2" 
+             width="2" 
+             depth="2"
              position="-1 0.91 -2.69" 
-             rotation="0 49.12 13.61"></a-box>      
+             rotation="0 49.12 13.61"></a-box>     
+
+      <a-cone  class="clickable" 
+               teleport-platform="cameraRig:#camera-rig" 
+               color="rgb(100,100,150)" 
+               position="5 0 -4" 
+               height="3" 
+               radiusTop="1" 
+               radiusBottom="1"
+               segmentsRadial="36"
+               segmentsHeight="18"
+               material="src: #myColor1; transparent: true; opacity: 0.55" ></a-cone>
 
       <a-box   class="clickable" 
                teleport-platform="cameraRig:#camera-rig" 
                color="rgb(100,100,150)" 
-               position="5 0 -4" 
+               position="-5 0 4" 
                height="0.5" 
                width="2" 
-               depth=" 2"></a-box>
-      <a-sky color="#ECECEC"></a-sky> 
+               depth="2"></a-box>
+
+      <!-- <a-sky color="#ECECEC"></a-sky>  -->
 
       <a-entity id="camera-rig" position="0 0 0"> 
         <a-camera id="cam" wasd-controls-enabled="false"> 
