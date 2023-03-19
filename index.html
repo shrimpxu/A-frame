@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+
+    <script src="click-component.js"></script>
+    <script src="teleport-platform.js"></script>
+    <script src="https://unpkg.com/aframe-animation-component@3.2.5/dist/aframe-animation-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-randomizer-components@3.0.2/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://unpkg.com/aframe-entity-generator-component@3.0.1/dist/aframe-entity-generator-component.min.js"></script>
+    <script>
+
+    AFRAME.registerComponent('random-material', {
+      init: function () {
+        this.el.setAttribute('material', {
+          color: this.getRandomColor(),
+          roughness: Math.random()* 0.9,
+          opacity: Math.random()*0.55
+        });
+      },
+      
+      getRandomColor: function () {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+    });
+
+    AFRAME.registerComponent('random-torus-knot', {
+      init: function () {
+        this.el.setAttribute('geometry', {
+          primitive: 'torusKnot',
+          radius: Math.random() * 4,
+          radiusTubular: Math.random() * .25,
+          p: Math.round(Math.random() * 2),
+          q: Math.round(Math.random() * 0.1)
+        });
+      }
+    });
+
+    AFRAME.registerComponent('random-sphere', {
+      init: function () {
+        this.el.setAttribute('geometry', {
+          primitive: 'sphere',
+          radius: Math.random()*2
+        });
+      }
+    });
+  </script>
+  </head>
+  <body>
+    <a-scene>
+      
+    <a-assets>
+    <img id="myColor" src= "img/1.jpg" >
+    <a-mixin id="color-animation"
+    animation__color="startEvents: color; property: material.color; from: #E39940; to: #722DFC; loop: 2; dur: 1000; easing:linear;"
+    ></a-mixin>
+    <a-mixin id="torusKnot"
+    random-torus-knot
+    random-material
+    random-position="min: -10 -10 -20; max: 10 10 20"
+    animation__color="startEvents: color; property: material.color; from: #E39940; to: #722DFC; loop: 2; dur: 1000; easing:linear;"></a-mixin>
+    <a-mixin id="ball"
+    random-sphere
+    random-material
+    random-position="min: -10 -10 -20; max: 10 10 20"></a-mixin>
+    </a-assets>
+    <a-entity id="torus"
+    class="clickable" 
+    mixin="color-animation" 
+    click-component="animateElement:#torus; eventName:color"
+    entity-generator="mixin: torusKnot; num: 50"></a-entity>
+    <a-entity entity-generator="mixin: ball; num: 50"></a-entity>
+
+      <a-box id= "box"
+             class="clickable" 
+             mixin="color-animation" 
+             click-component="animateElement:#box; eventName:color"
+             material="src: #myColor; transparent: true; opacity: 0.75" 
+             position="-1 0.91 -2.69" 
+             rotation="0 49.12 13.61"></a-box>      
+
+      <a-box   class="clickable" 
+               teleport-platform="cameraRig:#camera-rig" 
+               color="rgb(100,100,150)" 
+               position="5 0 -4" 
+               height="0.5" 
+               width="2" 
+               depth=" 2"></a-box>
+      <a-sky color="#ECECEC"></a-sky> 
+
+      <a-entity id="camera-rig" position="0 0 0"> 
+        <a-camera id="cam" wasd-controls-enabled="false"> 
+           <a-entity
+               cursor="fuse: true; fuseTimeout:1500"
+               raycaster="near: 0; far: 50; objects: .clickable;"   
+               material="color: white; shader: flat"
+               position="0 0 -1"
+               scale="0.05 0.05 0.05"
+               geometry="primitive: ring"
+               
+               animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 0.05 0.05 0.05; to: 0.02 0.02 0.02"
+               animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.02 0.02 0.02; to: 0.05 0.05 0.05"
+               animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 0.05 0.05 0.05" >
+           </a-entity>
+        </a-camera>
+     </a-entity>  
+      <a-light type="ambient" intensity="0.5" color="#ffffff"></a-light>
+      <a-light intensity="2" color="#00ffff" position="-5.72 6.65 0.80"
+               animation__color="property: color; dir: alternate; dur: 2000; easing: easeInOutSine; loop: true; to: #ff0000"
+               alongpath="path: 10,10,-10 -20,10,-10 10,0,-10; closed: true; dur: 12000"></a-light>
+      <a-light intensity="2" color="#ff0000" position="8.60 6.65 0.80"
+               animation__color="property: color; dir: alternate; dur: 2000; easing: easeInOutSine; loop: true; to: #0000ff"
+               alongpath="path: -2,-2,5 2,-1,5 0,-1,5; closed: true; dur: 3000;"></a-light>
+
+      
+    </a-scene>
+  </body>
+</html>
